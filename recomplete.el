@@ -13,7 +13,7 @@
 
 ;; This package provides mechanism for immediate completion, running again cycles over options.
 
-;;; Usage
+;;; Usage:
 
 ;;
 ;; A key can be bound to a completion action,
@@ -76,7 +76,7 @@
 ;; - `buffer-undo-list': The undo state before execution.
 ;; - `pending-undo-list': The undo state before execution.
 ;; - `point' The point before execution.
-;; - `msg-text' The point before execution.
+;; - `msg-text' The message text displayed to the user.
 ;; - `cycle-index' The position in the list of options to cycle through.
 ;; - `cycle-reverse' when t, reverse the cycle direction.
 ;; - `fn-symbol' The symbol to identify the type of chain being cycled.
@@ -242,7 +242,7 @@ Argument FN-CACHE stores the result for reuse."
                 (setq result-choices miss)
                 (setq word-beg (marker-position start))
                 (setq word-end (marker-position end))
-                ;; Return the word would make the correction, we do this ourselves next.
+                ;; Return the word that makes the correction; we handle this ourselves next.
                 nil))))
         (ispell-word))
 
@@ -413,7 +413,7 @@ Argument FN-CACHE stores the result for reuse."
 ;; Implementation: `dabbrev'
 
 (defun recomplete-impl-dabbrev (cycle-index fn-cache)
-  "Cycle case styles using the choice at CYCLE-INDEX.
+  "Expand using `dabbrev' at CYCLE-INDEX.
 Argument FN-CACHE stores the result for reuse."
   (declare (important-return-value t))
   (pcase-let ((`(,result-choices ,word-beg ,word-end) (or fn-cache '(nil nil nil))))
@@ -519,7 +519,7 @@ Return the region replaced."
 
 ;;;###autoload
 (defun recomplete-with-callback (fn-symbol cycle-offset &optional cycle-index-init)
-  "Run FN-SYMBOL, chaining executions for any function in FN-GROUP.
+  "Run FN-SYMBOL, chaining executions for this function.
 
 Argument CYCLE-OFFSET The offset for cycling words,
 1 or -1 for forward/backward.
@@ -580,7 +580,7 @@ step onto the next item)."
           (setq cycle-offset (- cycle-offset)))
         (setq cycle-index (+ cycle-offset (cdr (assq 'cycle-index alist))))
 
-        ;; Undo with strict checks so we know _exactly_ whats going on
+        ;; Undo with strict checks so we know _exactly_ what's going on
         ;; and don't allow some unknown state to be entered.
         (let ((undo-data (cdr buffer-undo-list)) ; Skip the 'nil' car of the list.
               (undo-data-init (cdr buffer-undo-list-init)))
@@ -590,7 +590,7 @@ step onto the next item)."
           ;; This can happen when `recomplete' cycles back to the initial state.
           ;; While not common it can happen if the complete action compares the state
           ;; of the current buffer with the contents that replaces it, where no change
-          ;; if found and no undo step is added. In this case, the last undo will be skipped.
+          ;; is found and no undo step is added. In this case, the last undo will be skipped.
           (unless (eq undo-data-init undo-data)
             ;; Since setting undo-data could corrupt the buffer if there is an unexpected state,
             ;; ensure we have exactly one undo step added,
@@ -692,7 +692,7 @@ step onto the next item)."
 
                     (unless (zerop msg-start)
                       (setq msg-text (concat ellipsis (substring msg-text (length ellipsis)))))))))
-            ;; End single line display.
+            ;; Single line display logic has been handled.
 
             ;; Run last so we can ensure it's the last text in the message buffer.
             ;; Don't log because it's not useful to keep the selection.
@@ -712,7 +712,7 @@ step onto the next item)."
                    (cons 'is-first-post-command t)
                    (cons 'msg-text msg-text)))
 
-            ;; Ensure a local hook, which removes it's self on the first non-successive call
+            ;; Ensure a local hook, which removes itself on the first non-successive call
             ;; to a command that doesn't execute `recomplete-with-callback' with `fn-symbol'.
             (add-hook 'post-command-hook #'recomplete--alist-clear-hook 0 t)))
 
