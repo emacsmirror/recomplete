@@ -53,7 +53,7 @@ Built-In Completions
    :Kebab Case: ``the-red-fox-jumped-over-the-lazy-dog``
 ``case-style-symbol``
    The same as ``case-style`` however this operates on the current ``symbol``.
-   *Kebab Case* is only used when the language considers ``-`` part of a symbol (Lisp for e.g. not C/C++/Python).
+   *Kebab Case* is only used when the language considers ``-`` part of a symbol (Lisp, e.g. not C/C++/Python).
 ``dabbrev``
    Provides similar functionality to ``dabbrev-completion``.
 
@@ -142,4 +142,4 @@ Other Packages
 `flyspell <https://www.emacswiki.org/emacs/FlySpell>`__
    This package provides ``flyspell-auto-correct-word`` which supports cycling over corrections.
    Although it has the down-side of adding undo steps while cycling over options,
-   and it's not generalized for different kinds of corrections/completion.
+   and it is not generalized for different kinds of corrections/completion.

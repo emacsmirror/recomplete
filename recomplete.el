@@ -73,8 +73,8 @@
 ;; - This is set to nil via `recomplete--alist-clear-hook' when incompatible functions run.
 ;;
 ;; Keys are:
-;; - `buffer-undo-list': The undo state before execution.
-;; - `pending-undo-list': The undo state before execution.
+;; - `buffer-undo-list': The buffer-undo-list before execution.
+;; - `pending-undo-list': The pending-undo-list before execution.
 ;; - `point' The point before execution.
 ;; - `msg-text' The message text displayed to the user.
 ;; - `cycle-index' The position in the list of options to cycle through.
@@ -95,7 +95,7 @@
 (defmacro recomplete--with-advice (advice &rest body)
   "Execute BODY with ADVICE temporarily enabled.
 
-Advice are triplets of (SYMBOL HOW FUNCTION),
+Each advice is a triplet of (SYMBOL HOW FUNCTION),
 see `advice-add' documentation."
   (declare (indent 1))
   (let ((advice-list advice)
@@ -177,7 +177,7 @@ see `advice-add' documentation."
 (defun recomplete--undo-next (list)
   "Get the next undo step in LIST.
 
-Argument LIST compatible list `buffer-undo-list'."
+Argument LIST is a `buffer-undo-list' compatible list."
   (declare (important-return-value t))
   (while (car list)
     (setq list (cdr list)))
